@@ -1,0 +1,87 @@
+# ============================================================
+# VideoRecSys .gitignore
+# ============================================================
+
+# ----- 数据文件（不上传到 GitHub，太大）-----
+data/raw/
+data/cleaned/
+data/features/
+data/samples/
+feature_store/
+logs/
+reports/
+
+# 保留目录结构（空目录用 .gitkeep 占位）
+!data/raw/.gitkeep
+!data/cleaned/.gitkeep
+!data/features/.gitkeep
+!data/samples/.gitkeep
+!feature_store/.gitkeep
+!logs/.gitkeep
+!reports/.gitkeep
+
+# ----- 模型权重（用 Google Drive 存）-----
+*.pt
+*.pth
+*.ckpt
+*.pkl
+*.bin
+*.safetensors
+
+# ----- 数据格式文件 -----
+*.parquet
+*.csv
+*.tsv
+*.dat
+*.zip
+*.tar.gz
+
+# ----- Python -----
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+.pytest_cache/
+.mypy_cache/
+
+# ----- 虚拟环境 -----
+venv/
+env/
+.env
+.venv
+ENV/
+
+# ----- Jupyter -----
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+
+# ----- IDE -----
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ----- 环境变量（敏感信息绝对不上传）-----
+.env
+.env.local
+.env.production
+secrets.yaml
+*_secret*
+*_key*
+credentials.json
+
+# ----- Docker -----
+.docker/
+
+# ----- Google Cloud -----
+*.json
+!configs/*.json
+service-account*.json

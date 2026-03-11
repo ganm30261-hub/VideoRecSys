@@ -1,0 +1,50 @@
+# ============================================================
+# Pipeline 配置文件
+# 对应企业: 配置中心（Apollo / Nacos）
+# ============================================================
+
+project:
+  name: VideoRecSys
+  version: "1.0.0"
+  description: "Scalable Video Recommendation System"
+
+# 数据路径配置
+paths:
+  base_dir: "./VideoRecSys"          # 本地运行
+  # base_dir: "/content/VideoRecSys" # Colab 运行（取消注释）
+  # base_dir: "/content/drive/MyDrive/VideoRecSys"  # Colab + Google Drive
+
+# 数据清洗规则（DQC）
+cleaning:
+  min_user_interactions: 20    # 用户最少交互次数
+  min_item_interactions: 10    # 视频最少被交互次数
+  rating_min: 1
+  rating_max: 5
+  label_threshold: 4           # rating >= 4 为正样本
+  dedup_keys: ["user_id", "item_id"]
+
+# 特征工程
+feature_engineering:
+  seq_len: 50                  # 行为序列最大长度
+  user_activity_tiers:         # 用户活跃度分层
+    - 20
+    - 50
+    - 100
+    - 200
+  item_popularity_bins: 5      # 视频热度分层数
+
+# 样本工厂
+sample_factory:
+  neg_ratio: 4                 # 正负样本比 1:4
+  test_ratio: 0.2              # 时序划分比例
+  random_neg_ratio: 0.5        # 随机负采样比例
+  hot_neg_ratio: 0.5           # 热门负采样比例
+  hot_pool_size: 2000          # 热门池大小
+  random_seed: 42
+
+# 监控告警阈值
+monitoring:
+  psi_warning: 0.1             # PSI 注意阈值
+  psi_alert: 0.2               # PSI 告警阈值
+  missing_rate_alert: 0.05     # 缺失率告警阈值
+  duplicate_alert: true        # 有重复即告警

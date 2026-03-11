@@ -1,0 +1,26 @@
+# ============================================================
+# 精排模型配置（DIN）
+# ============================================================
+
+din:
+  embedding_dim: 32
+  attention_hidden: [64, 16]
+  dnn_hidden: [256, 128, 64]
+  dropout: 0.3
+  use_bn: true                # BatchNorm
+  learning_rate: 0.0005
+  batch_size: 1024
+  epochs: 30
+  seq_len: 50
+
+multi_task:
+  tasks:
+    - name: ctr               # 点击率
+      weight: 1.0
+    - name: watch_ratio       # 完播率
+      weight: 0.8
+  loss: "bce"                 # binary cross entropy
+
+evaluation:
+  metrics: ["auc", "gauc", "logloss", "ndcg@10", "hr@10"]
+  gauc_group_col: "user_id"

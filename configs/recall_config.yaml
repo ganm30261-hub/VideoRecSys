@@ -1,0 +1,24 @@
+# ============================================================
+# 召回模型配置
+# ============================================================
+
+two_tower:
+  user_embedding_dim: 64
+  item_embedding_dim: 64
+  hidden_layers: [256, 128, 64]
+  dropout: 0.2
+  temperature: 0.07           # 对比学习温度系数
+  learning_rate: 0.001
+  batch_size: 2048
+  epochs: 20
+  num_negatives: 10           # 批内负采样数量
+
+faiss_index:
+  index_type: "IVF"           # IVF / Flat / HNSW
+  nlist: 100                  # IVF 聚类中心数
+  nprobe: 10                  # 查询时探索的聚类数
+  top_k: 200                  # 召回候选数量
+
+i2i:
+  similarity: "cosine"        # 相似度计算方式
+  top_k: 50                   # 每个 item 保留邻居数
