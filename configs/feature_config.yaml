@@ -1,70 +1,25 @@
-# ============================================================
-# 特征配置文件
-# 对应企业: Feature Registry（特征注册中心）
-# ============================================================
+# configs/feature_config.yaml
+# 特征列定义
 
 user_features:
-  static:
-    - name: gender_enc
-      dtype: int
-      description: "性别编码 M=1, F=0"
-    - name: age
-      dtype: int
-      description: "年龄分组"
-    - name: occupation
-      dtype: int
-      description: "职业编码"
-  behavioral:
-    - name: interaction_count
-      dtype: float
-      description: "历史交互总次数"
-    - name: avg_rating
-      dtype: float
-      description: "平均评分"
-    - name: std_rating
-      dtype: float
-      description: "评分标准差"
-    - name: positive_rate
-      dtype: float
-      description: "正反馈率"
-    - name: activity_tier
-      dtype: int
-      description: "活跃度分层 0-4"
-    - name: active_days
-      dtype: float
-      description: "活跃周期（天）"
+  id_col: user_id
+  stat_cols:                    # 行为统计特征
+    - interaction_count
+    - avg_watch_ratio
+    - std_watch_ratio
+    - positive_rate
+    - max_watch_ratio
+    - activity_tier
 
 item_features:
-  statistical:
-    - name: play_count
-      dtype: float
-      description: "总播放次数"
-    - name: avg_rating
-      dtype: float
-      description: "平均评分"
-    - name: ctr_proxy
-      dtype: float
-      description: "正反馈率（CTR 代理）"
-    - name: popularity_tier
-      dtype: int
-      description: "热度分层 0-4"
-    - name: year
-      dtype: float
-      description: "上映年份"
-  content:
-    - name: genre_*
-      dtype: int
-      description: "类型 One-Hot 编码（18类）"
+  id_col: item_id
+  stat_cols:                    # 视频统计特征
+    - play_count
+    - avg_watch_ratio
+    - ctr_proxy
+    - std_watch_ratio
+    - popularity_tier
 
-sequence_features:
-  - name: all_seq
-    dtype: str
-    max_len: 50
-    description: "用户最近50个交互视频 ID 序列"
-  - name: pos_seq
-    dtype: str
-    max_len: 50
-    description: "用户最近50个正反馈视频 ID 序列"
-  - name: seq_len
-    dtype: int
-    description: "实际序列长度"
+sequence:
+  seq_col: pos_seq              # 使用正反馈序列
+  seq_len: 50

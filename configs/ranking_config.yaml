@@ -1,26 +1,22 @@
-# ============================================================
-# 精排模型配置（DIN）
-# ============================================================
+# configs/ranking_config.yaml
+# Step3 DIN 精排模型配置
 
-din:
+model:
   embedding_dim: 32
   attention_hidden: [64, 16]
   dnn_hidden: [256, 128, 64]
   dropout: 0.3
-  use_bn: true                # BatchNorm
-  learning_rate: 0.0005
-  batch_size: 1024
+  tower_emb_dim: 64             # Step2 Embedding 维度
+  watch_ratio_max: 3.0
+
+training:
+  lr: 0.0005
+  batch_size: 2048
   epochs: 30
-  seq_len: 50
+  early_stop: 4
+  multitask_alpha: 0.5          # α*CTR + (1-α)*完播率
+  random_seed: 42
 
-multi_task:
-  tasks:
-    - name: ctr               # 点击率
-      weight: 1.0
-    - name: watch_ratio       # 完播率
-      weight: 0.8
-  loss: "bce"                 # binary cross entropy
-
-evaluation:
-  metrics: ["auc", "gauc", "logloss", "ndcg@10", "hr@10"]
-  gauc_group_col: "user_id"
+serving:
+  top_n: 10                     # 最终返回推荐数
+  alpha: 0.5                    # 融合排序权重

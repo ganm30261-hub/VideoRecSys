@@ -1,0 +1,70 @@
+# cloudbuild.yaml
+# GitHub 推送 → 自动构建 → 自动部署到 Cloud Run
+# ============================================================
+#
+# 触发条件: 推送到 main 分支时自动执行
+#
+# 执行步骤:
+#   Step 1 → 构建 Docker 镜像
+#   Step 2 → 推送镜像到 Artifact Registry
+#   Step 3 → 部署到 Cloud Run
+#
+# ============================================================
+
+substitutions:
+  _REGION: us-central1                        # ← 改成你的区域
+  _SERVICE_NAME: videorecsys                  # Cloud Run 服务名
+  _GCS_BUCKET: your-bucket-name              # ← 改成你的 bucket 名
+  _REPOSITORY: videorecsys-repo              # Artifact Registry 仓库名
+
+steps:
+  # ── Step 1: 构建 Docker 镜像 ──
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'build'
+    args:
+      - 'build'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE_NAME}:$COMMIT_SHA'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE_NAME}:latest'
+      - '.'
+
+  # ── Step 2: 推送镜像到 Artifact Registry ──
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'push'
+    args:
+      - 'push'
+      - '--all-tags'
+      - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE_NAME}'
+
+  # ── Step 3: 部署到 Cloud Run ──
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'deploy'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - '${_SERVICE_NAME}'
+      - '--image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE_NAME}:$COMMIT_SHA'
+      - '--platform=managed'
+      - '--region=${_REGION}'
+      - '--allow-unauthenticated'
+      - '--memory=2Gi'
+      - '--cpu=2'
+      - '--timeout=60'
+      - '--concurrency=10'
+      - '--min-instances=0'
+      - '--max-instances=3'
+      - '--set-env-vars=BASE_DIR=/app/model_artifacts,GCS_BUCKET=${_GCS_BUCKET}'
+
+# 构建产出的镜像
+images:
+  - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE_NAME}:$COMMIT_SHA'
+  - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE_NAME}:latest'
+
+# 构建超时时间
+timeout: '1200s'
+
+# 构建日志存储到 GCS
+options:
+  logging: CLOUD_LOGGING_ONLY
