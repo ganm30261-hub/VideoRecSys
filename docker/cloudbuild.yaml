@@ -14,7 +14,7 @@
 substitutions:
   _REGION: us-central1                        # ← 改成你的区域
   _SERVICE_NAME: videorecsys                  # Cloud Run 服务名
-  _GCS_BUCKET: your-bucket-name              # ← 改成你的 bucket 名
+  _GCS_BUCKET: yalingdata              # ← 改成你的 bucket 名
   _REPOSITORY: videorecsys-repo              # Artifact Registry 仓库名
 
 steps:
