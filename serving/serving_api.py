@@ -226,12 +226,18 @@ def recommend(user_id: int, recall_k: int = 200,
 # ══════════════════════════════════════════════
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # 启动时加载资源
-    base_dir = os.environ.get('BASE_DIR', '/app/model_artifacts')
+    base_dir   = os.environ.get('BASE_DIR', '/app/model_artifacts')
+    gcs_bucket = os.environ.get('GCS_BUCKET', '')
+    gcs_prefix = os.environ.get('GCS_PREFIX', 'VideoRecSys/model_artifacts')
+
+    if gcs_bucket:
+        log.info(f"从 GCS 下载模型文件  bucket={gcs_bucket}")
+        from serving.gcs_loader import download_model_artifacts
+        download_model_artifacts(gcs_bucket, gcs_prefix, base_dir)
+
     log.info(f"加载资源  BASE_DIR={base_dir}")
     _state.update(load_all(base_dir))
     yield
-    # 关闭时清理（可选）
     _state.clear()
 
 app = FastAPI(

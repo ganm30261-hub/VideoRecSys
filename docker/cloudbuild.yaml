@@ -57,7 +57,7 @@ steps:
       - '--concurrency=10'
       - '--min-instances=0'
       - '--max-instances=3'
-      - '--set-env-vars=BASE_DIR=/app/model_artifacts,GCS_BUCKET=${_GCS_BUCKET}'
+      - '--set-env-vars=BASE_DIR=/app/model_artifacts,GCS_BUCKET=yalingdata,GCS_PREFIX=VideoRecSys/model_artifacts'
 
 # 构建产出的镜像
 images:
