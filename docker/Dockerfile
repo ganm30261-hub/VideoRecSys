@@ -18,9 +18,13 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # 复制项目代码
-COPY models/    ./models/
-COPY serving/   ./serving/
-COPY configs/   ./configs/
+# 复制代码文件（不含模型权重）
+COPY serving/        ./serving/
+COPY configs/        ./configs/
+COPY models/         ./models/
+COPY experiment/     ./experiment/
+COPY monitoring/     ./monitoring/
+COPY pipeline/       ./pipeline/
 
 # 复制模型文件（从 GCS 挂载或直接 COPY）
 # 注意: 模型文件较大，建议从 GCS 在启动时下载
