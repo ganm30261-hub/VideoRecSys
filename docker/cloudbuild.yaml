@@ -23,6 +23,8 @@ steps:
     id: 'build'
     args:
       - 'build'
+      - '-f'
+      - 'docker/Dockerfile'          # ← 加这行，指向正确路径
       - '-t'
       - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE_NAME}:$COMMIT_SHA'
       - '-t'
